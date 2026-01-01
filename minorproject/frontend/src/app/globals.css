@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Use Geist fonts via Tailwind font-sans class — no Arial override */
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #1f1f1f 25%,
+      #2a2a2a 50%,
+      #1f1f1f 75%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* Stage pulse animation */
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: rgb(59 130 246 / 0.5);
+  }
+  50% {
+    border-color: rgb(59 130 246 / 1);
+  }
+}
+
+.stage-active {
+  animation: pulse-border 1.5s ease-in-out infinite;
+}

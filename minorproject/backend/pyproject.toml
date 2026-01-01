@@ -1,0 +1,70 @@
+[project]
+name = "faithforge-backend"
+version = "0.1.0"
+description = "FaithForge — Self-verifying multi-agent RAG system"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    # ── Web Framework ────────────────────────────────────────────────────
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+
+    # ── LLM / ML ────────────────────────────────────────────────────────
+    "httpx>=0.25.0",
+    "transformers>=4.36.0",
+    "peft>=0.7.0",
+    "bitsandbytes>=0.41.0",
+    "torch>=2.1.0",
+    "sentence-transformers>=2.2.0",
+    "datasets>=2.16.0",
+
+    # ── Retrieval ────────────────────────────────────────────────────────
+    "chromadb>=0.4.0",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=2.2.0",
+
+    # ── Orchestration ────────────────────────────────────────────────────
+    "langgraph>=0.2.0",
+    "langchain-core>=0.3.0",
+
+    # ── Queue ────────────────────────────────────────────────────────────
+    "redis[hiredis]>=5.0.0",
+
+    # ── Streaming ────────────────────────────────────────────────────────
+    "sse-starlette>=2.0.0",
+
+    # ── Observability ────────────────────────────────────────────────────
+    "opentelemetry-api>=1.21.0",
+    "opentelemetry-sdk>=1.21.0",
+    "opentelemetry-exporter-otlp>=1.21.0",
+
+    # ── Evaluation ───────────────────────────────────────────────────────
+    "ragas>=0.1.0",
+    "scikit-learn>=1.3.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.25.0",
+    "ruff>=0.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

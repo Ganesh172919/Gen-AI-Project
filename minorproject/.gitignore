@@ -1,0 +1,61 @@
+# FaithForge .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Data & Models (don't commit large files)
+data/
+models/
+*.pkl
+*.bin
+*.safetensors
+*.gguf
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Ruff
+.ruff_cache/
+
+# pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage

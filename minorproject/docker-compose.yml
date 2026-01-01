@@ -1,0 +1,92 @@
+# FaithForge — Docker Compose
+# Local development stack: API, worker, frontend, Redis, Postgres
+
+services:
+  # ── Backend (FastAPI) ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - PGVECTOR_URL=postgresql://faithforge:faithforge@postgres:5432/faithforge
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - DEBUG=${DEBUG:-true}
+    volumes:
+      - ./backend:/app
+      - backend-data:/app/data
+      - backend-models:/app/models
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # ── Worker (background job processor) ──────────────────────────────────────
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.worker"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - PGVECTOR_URL=postgresql://faithforge:faithforge@postgres:5432/faithforge
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+    volumes:
+      - ./backend:/app
+      - backend-data:/app/data
+      - backend-models:/app/models
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # ── Frontend (Next.js) ───────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ── Redis ─────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+  # ── PostgreSQL (for pgvector) ─────────────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: faithforge
+      POSTGRES_PASSWORD: faithforge
+      POSTGRES_DB: faithforge
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  backend-data:
+  backend-models:
+  redis-data:
+  postgres-data:
